@@ -1,0 +1,31 @@
+<div>
+  <ul class="flex">
+    @for (team of teams; track $index) {
+    <li class="p-2 w-48">
+      <a routerLinkActive="active" [routerLink]="['/teams', team.id]">
+        <mat-card class="p-4 flex flex-col text-center gap-4 hover:bg-blue-100">
+          @if(team.hasLogo){
+          <div class="w-16 h-16 bg-gray-100 rounded-full self-center">
+            <img src="/TeamLogos/{{ team.id }}.svg" class="w-16 h-16" />
+          </div>
+          }
+
+          <span class="flex items-center justify-between">
+            {{ team.name }}
+          </span>
+          <mat-divider></mat-divider>
+          <mat-card-footer class="flex gap-2 justify-center items-center">
+            @for (i of numberArray; track $index) {
+            <div
+              class="h-4 w-4 bg-green-500 rounded-full flex self-center justify-center"
+            >
+              <span class="text-xs"> w </span>
+            </div>
+            }
+          </mat-card-footer>
+        </mat-card>
+      </a>
+    </li>
+    }
+  </ul>
+</div>

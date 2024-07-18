@@ -1,6 +1,10 @@
 import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import TeamsRouter from './routes/teams.route';
+import PlayersRouter from './routes/players.route';
+import GamesRouter from './routes/games.route';
+
+import cors from 'cors';
 
 export const prisma = new PrismaClient();
 
@@ -9,9 +13,12 @@ const port = 8080;
 
 async function main() {
     app.use(express.json());
+    app.use(cors());
 
     // Register API routes
     app.use('/api/v1/teams', TeamsRouter);
+    app.use('/api/v1/players', PlayersRouter);
+    app.use('/api/v1/games', GamesRouter);
 
     // Catch unregistered routes
     app.all('*', (req: Request, res: Response) => {

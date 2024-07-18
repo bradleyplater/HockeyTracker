@@ -11,6 +11,89 @@ datasource db {
 }
 
 model Teams {
-  id    String    @id
-  name  String    @unique
+  id              String                @id
+  name            String                @unique
+  hasLogo         Boolean               @default(false)
+  players         PlayersInTeams[] 
+  games           Games[]
+}
+
+model Players {
+  id              String                @id
+  email           String                @unique
+  firstName       String
+  surname         String
+  teams           PlayersInTeams[]
+  stats           PlayerStats[]
+  games           Games[]
+}
+
+model PlayersInTeams {
+  player          Players               @relation(fields: [playerId], references: [id])
+  playerId        String                @unique
+  team            Teams                 @relation(fields: [teamId], references: [id])
+  teamId          String
+  playerNumber    Int?                  @unique
+  stats           PlayerStats[]
+
+  @@id([playerId, teamId])
+}
+
+model PlayerStats {
+  id                                                 String           @id @default(uuid())
+  player                                             Players          @relation(fields: [playerId], references: [id])
+  playerId                                           String
+  season                                             Season           @relation(fields: [seasonId], references: [id])
+  seasonId                                           String
+  numberOfGoals                                      Int?             @default(0)
+  numberOfAssists                                    Int?             @default(0)
+  gamesPlayed                                        Int?             @default(0)
+  pims                                               Int?             @default(0)
+  totalPoints                                        Int              @default(0)
+  teamId                                             String?          
+  playerInTeam                                       PlayersInTeams?  @relation(fields: [playerId, teamId], references: [playerId, teamId])
+}
+
+model Season {
+  id                    String            @id
+  name                  String            @unique
+  startDate             DateTime
+  endDate               DateTime
+
+  playerStats           PlayerStats[]
+}
+
+model Games {
+  id                                                String            @id
+  goals                                             Goals[]
+  teamCreatedBy                                     Teams             @relation(fields: [teamCreatedById], references: [id])
+  teamCreatedById                                   String            
+  opponentTeam                                      String
+  isHome                                            Boolean
+  goalsConceeded                                    Int
+  goalsScored                                       Int
+  players                                           Players[]
+  penalties                                         Penalties[]
+  date                                              DateTime
+  type                                              String          @default("challenge")   
+}
+
+model Goals {
+  id                                                 String           @id @default(uuid())
+  game                                               Games            @relation(fields: [gameId], references: [id])
+  gameId                                             String
+  scoredByPlayerId                                   String
+  assist1                                            String?
+  assist2                                            String?
+  time                                               Int              @default(0) // In seconds
+}
+
+model Penalties {
+  id                                                 Int              @id @default(autoincrement())
+  game                                               Games            @relation(fields: [gameId], references: [id])
+  gameId                                             String
+  playerId                                           String
+  type                                               String
+  duration                                           Int              @default(0)
+  time                                               Int              @default(0) // In seconds
 }

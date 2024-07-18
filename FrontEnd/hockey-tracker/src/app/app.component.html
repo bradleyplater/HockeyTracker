@@ -1,0 +1,39 @@
+<main class="main">
+  <mat-sidenav-container>
+    <mat-sidenav
+      #sidenav
+      mode="side"
+      [(opened)]="opened"
+      (opened)="events.push('open!')"
+      (closed)="events.push('close!')"
+      [fixedInViewport]="true"
+    >
+      <ul class="h-screen bg-blue-400 text-white">
+        <li class="p-4 text-center">
+          <span class="text-2xl">Hockey Tracker</span>
+        </li>
+        <li class="mb-2">
+          <a
+            routerLink="/teams"
+            routerLinkActive="active"
+            class="block p-2 text-lg text-center hover:bg-blue-200 hover:text-black"
+          >
+            Teams
+          </a>
+        </li>
+        <li>
+          <a
+            routerLink="/players"
+            routerLinkActive="active"
+            class="block p-2 text-lg text-center hover:bg-blue-200 hover:text-black"
+          >
+            Players
+          </a>
+        </li>
+      </ul>
+    </mat-sidenav>
+    <mat-sidenav-content class="flex-1">
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</main>
