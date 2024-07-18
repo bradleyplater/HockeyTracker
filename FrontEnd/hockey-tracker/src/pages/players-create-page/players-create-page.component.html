@@ -1,0 +1,22 @@
+<div class="h-screen p-4">
+  <h3>Create Player</h3>
+  <form
+    class="flex flex-col gap-2 pr-16 pl-16"
+    [formGroup]="playerForm"
+    (ngSubmit)="onSubmit()"
+  >
+    <mat-form-field [floatLabel]="'auto'">
+      <mat-label>First Name</mat-label>
+      <input matInput formControlName="firstName" />
+    </mat-form-field>
+    <mat-form-field [floatLabel]="'auto'">
+      <mat-label>Surname</mat-label>
+      <input matInput formControlName="surname" />
+    </mat-form-field>
+    <mat-form-field [floatLabel]="'auto'">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" />
+    </mat-form-field>
+    <button mat-raised-button>Submit</button>
+  </form>
+</div>

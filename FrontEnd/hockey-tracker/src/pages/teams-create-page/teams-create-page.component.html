@@ -1,0 +1,18 @@
+<div class="h-screen p-4">
+  <h3>Create Team</h3>
+  <form
+    class="flex flex-col gap-2 pr-16 pl-16"
+    [formGroup]="teamForm"
+    (ngSubmit)="onSubmit()"
+  >
+    <mat-form-field [floatLabel]="'auto'">
+      <mat-label>Team Name</mat-label>
+      <input
+        matInput
+        placeholder="Edmonton Oilers"
+        formControlName="teamName"
+      />
+    </mat-form-field>
+    <button mat-raised-button>Submit</button>
+  </form>
+</div>
