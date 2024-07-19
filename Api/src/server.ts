@@ -4,6 +4,7 @@ import TeamsRouter from './routes/teams.route';
 import PlayersRouter from './routes/players.route';
 import GamesRouter from './routes/games.route';
 import GoalsRouter from './routes/goals.route';
+import PenaltiesRouter from './routes/penalties.route';
 
 import cors from 'cors';
 
@@ -21,6 +22,7 @@ async function main() {
     app.use('/api/v1/players', PlayersRouter);
     app.use('/api/v1/games', GamesRouter);
     app.use('/api/v1/goals', GoalsRouter);
+    app.use('/api/v1/penalties', PenaltiesRouter);
 
     // Catch unregistered routes
     app.all('*', (req: Request, res: Response) => {
