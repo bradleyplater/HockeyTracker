@@ -72,6 +72,8 @@ export class PenaltyListComponent {
         );
       });
 
+      console.log(this.penalties);
+
       this.isLoading = false;
     });
   }

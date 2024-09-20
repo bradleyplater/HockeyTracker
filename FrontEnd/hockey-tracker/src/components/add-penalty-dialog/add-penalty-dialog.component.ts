@@ -55,7 +55,6 @@ export class AddPenaltyDialogComponent {
     players: Player[];
     game: Game;
     team: Team;
-    penaltiesList: WritableSignal<PenaltyPanel[]>;
   }>(MAT_DIALOG_DATA);
 
   readonly penaltyTypes = Object.values(Penalties);

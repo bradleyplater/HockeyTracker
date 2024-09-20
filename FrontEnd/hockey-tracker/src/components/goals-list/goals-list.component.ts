@@ -2,6 +2,8 @@ import { ChangeDetectorRef, Component, signal } from '@angular/core';
 import { GoalsSubject } from '../../subjects/goals.subject';
 import { GoalPanel, ScoreTrack } from '../../models/goal';
 import { GoalPanelComponent } from '../goal-panel/goal-panel.component';
+import { GamesSubject } from '../../subjects/games.subject';
+import { Game } from '../../models/game';
 
 @Component({
   selector: 'app-goals-list',
@@ -12,7 +14,7 @@ import { GoalPanelComponent } from '../goal-panel/goal-panel.component';
 })
 export class GoalsListComponent {
   constructor(
-    private goalsSubject: GoalsSubject,
+    private gamesSubject: GamesSubject,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -34,29 +36,37 @@ export class GoalsListComponent {
     return this.thirdPeriodGoals().sort((a, b) => a.time - b.time);
   }
 
+  goalsList: GoalPanel[] = [];
   firstPeriodGoals = signal([] as GoalPanel[]);
   secondPeriodGoals = signal([] as GoalPanel[]);
   thirdPeriodGoals = signal([] as GoalPanel[]);
 
   ngOnInit() {
-    this.goalsSubject.totalGoals$.subscribe((goalsList) => {
-      if (!goalsList) return;
+    this.gamesSubject.selectedGame$.subscribe((game) => {
+      if (!game) return;
 
-      goalsList = this.updateGoalsWithScoreTrack(goalsList, 'PET', 'AWA');
+      this.goalsList = [];
+      this.updateGoalsListWithGoals(game);
+
+      this.goalsList = this.updateGoalsWithScoreTrack(
+        this.goalsList,
+        'PET',
+        'AWA'
+      );
 
       this.firstPeriodGoals.set(
-        goalsList.filter((goal) => goal.time <= this.twentyMinutes)
+        this.goalsList.filter((goal) => goal.time <= this.twentyMinutes)
       );
 
       this.secondPeriodGoals.set(
-        goalsList.filter(
+        this.goalsList.filter(
           (goal) =>
             goal.time > this.twentyMinutes && goal.time <= this.fortyMinutes
         )
       );
 
       this.thirdPeriodGoals.set(
-        goalsList.filter(
+        this.goalsList.filter(
           (goal) =>
             goal.time > this.fortyMinutes && goal.time <= this.sixtyMinutes
         )
@@ -104,5 +114,45 @@ export class GoalsListComponent {
     });
 
     return updatedGoals;
+  }
+
+  private updateGoalsListWithGoals(game: Game) {
+    game?.goals.forEach((goal) => {
+      const goalScorer = game?.players!.find(
+        (player) => player.id === goal.scoredByPlayerId
+      );
+      const assist1 = game.players!.find(
+        (player) => player.id === goal.assist1
+      );
+      const assist2 = game.players!.find(
+        (player) => player.id === goal.assist2
+      );
+
+      this.goalsList?.push({
+        scoredBy: goalScorer
+          ? `${goalScorer.firstName.toTitleCase()} ${goalScorer.surname.toTitleCase()}`
+          : '',
+        assist1: assist1
+          ? `${assist1.firstName.toTitleCase()} ${assist1.surname.toTitleCase()}`
+          : '',
+        assist2: assist2
+          ? `${assist2.firstName.toTitleCase()} ${assist2.surname.toTitleCase()}`
+          : '',
+        time: goal.time,
+        isOpponentGoal: false,
+      });
+    });
+
+    game?.opponentGoals.forEach((goal) => {
+      this.goalsList?.push({
+        scoredBy: `${goal.scoredByPlayerFirstName.toTitleCase()} ${goal.scoredByPlayerSurname.toTitleCase()}`,
+        assist1: '',
+        assist2: '',
+        time: goal.time,
+        isOpponentGoal: true,
+      });
+    });
+
+    this.goalsList.sort((a, b) => a.time - b.time);
   }
 }

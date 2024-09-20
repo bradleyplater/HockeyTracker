@@ -89,14 +89,6 @@ export class GamePageComponent {
           .subscribe((team) => {
             this.team = team;
             if (this.team) {
-              //TODO: This should probably be moved to the same pattern as the penalties
-              this.mapGoalsToGoalPanel(this.game?.goals!);
-              this.mapOpponentGoalsToGoalPanel(this.game?.opponentGoals!);
-
-              this.totalGoals().sort((a, b) => a.time - b.time);
-
-              this.goalsSubject.updateTotalGoals(this.totalGoals());
-
               this.isLoading = false;
             }
           });
@@ -112,7 +104,7 @@ export class GamePageComponent {
         players: this.team?.players?.filter((player) =>
           this.game?.players.some((gamePlayer) => gamePlayer.id == player.id)
         ),
-        gameId: this.game?.id,
+        game: this.game,
         team: this.team,
         goalsList: this.totalGoals,
       },
@@ -132,7 +124,6 @@ export class GamePageComponent {
         players: this.game?.players,
         game: this.game,
         team: this.team,
-        goalsList: this.totalGoals,
       },
 
       width: '600px',
@@ -141,52 +132,6 @@ export class GamePageComponent {
 
     dialogRef.afterClosed().subscribe((result) => {
       console.log('The dialog was closed');
-    });
-  }
-
-  private mapGoalsToGoalPanel(goals: Goal[]) {
-    goals.forEach((goal) => {
-      const goalScorer = this.team?.players!.find(
-        (player) => player.id === goal.scoredByPlayerId
-      );
-      const assist1 = this.team?.players!.find(
-        (player) => player.id === goal.assist1
-      );
-      const assist2 = this.team?.players!.find(
-        (player) => player.id === goal.assist2
-      );
-
-      this.totalGoals?.update((value) => [
-        ...value,
-        {
-          scoredBy: goalScorer
-            ? `${goalScorer.firstName.toTitleCase()} ${goalScorer.surname.toTitleCase()}`
-            : '',
-          assist1: assist1
-            ? `${assist1.firstName.toTitleCase()} ${assist1.surname.toTitleCase()}`
-            : '',
-          assist2: assist2
-            ? `${assist2.firstName.toTitleCase()} ${assist2.surname.toTitleCase()}`
-            : '',
-          time: goal.time,
-          isOpponentGoal: false,
-        },
-      ]);
-    });
-  }
-
-  private mapOpponentGoalsToGoalPanel(goals: OpponentGoal[]) {
-    goals.forEach((goal) => {
-      this.totalGoals?.update((value) => [
-        ...value,
-        {
-          scoredBy: `${goal.scoredByPlayerFirstName.toTitleCase()} ${goal.scoredByPlayerSurname.toTitleCase()}`,
-          assist1: '',
-          assist2: '',
-          time: goal.time,
-          isOpponentGoal: true,
-        },
-      ]);
     });
   }
 }
