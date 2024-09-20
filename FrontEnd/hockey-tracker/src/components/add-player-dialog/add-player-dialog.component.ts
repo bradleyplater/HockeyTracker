@@ -43,7 +43,6 @@ import { AddPlayerDTO } from '../../models/team';
     MatDialogActions,
     MatDialogClose,
     MatAutocompleteModule,
-    FormsModule,
     ReactiveFormsModule,
     AsyncPipe,
   ],

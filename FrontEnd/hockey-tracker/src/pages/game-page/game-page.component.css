@@ -1,0 +1,12 @@
+.mat-column-team,
+.mat-column-firstPeriod,
+.mat-column-secondPeriod,
+.mat-column-thirdPeriod,
+.mat-column-total {
+  text-align: center;
+}
+
+.mat-column-total {
+  text-align: center;
+  font-weight: bold;
+}

@@ -117,10 +117,45 @@ const createGoal = async (req: Request, res: Response) => {
     }
 };
 
+const createOpponentGoal = async (req: Request, res: Response) => {
+    try {
+        const { gameId, scoredByPlayerFirstName, scoredByPlayerSurname, time } =
+            req.body;
+
+        // Add goal to goals table
+        const goal = await prisma.opponentGoals.create({
+            data: {
+                id: crypto.randomUUID(),
+                gameId,
+                scoredByPlayerFirstName,
+                scoredByPlayerSurname,
+                time,
+            },
+        });
+
+        // Increments games goals scored
+        await prisma.games.update({
+            where: {
+                id: gameId,
+            },
+            data: {
+                goalsConceeded: {
+                    increment: 1,
+                },
+            },
+        });
+
+        res.status(201).json(goal);
+    } catch (e) {
+        genericExceptionHandler(e, res);
+    }
+};
+
 function ensureAssistIsEmptyStringWhenNull(assist: string) {
     return assist == null ? '' : assist;
 }
 
 export default {
     createGoal,
+    createOpponentGoal,
 };

@@ -1,0 +1,48 @@
+<h2 mat-dialog-title>Create game</h2>
+<mat-dialog-content>
+  <form [formGroup]="createGameForm" (ngSubmit)="onSubmit()" #gameForm="ngForm">
+    <mat-form-field class="w-full">
+      <mat-label>Opponent</mat-label>
+      <input class="w-48" matInput formControlName="opponentTeam" />
+    </mat-form-field>
+    <mat-form-field class="w-full">
+      <mat-label>Game Type</mat-label>
+      <mat-select formControlName="type">
+        @for (type of gameTypes; track $index) {
+        <mat-option [value]="type">{{ type.toTitleCase() }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="w-full pb-4">
+      <mat-label>Date of Game</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="date" />
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="picker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field class="w-full">
+      <mat-label>Players</mat-label>
+      <mat-select [formControl]="selectedPlayers" multiple>
+        <mat-select-trigger>
+          {{ getSelectedPlayersDisplayText() }}
+        </mat-select-trigger>
+        @for (player of data.players; track $index) {
+        <mat-option [value]="player.id"
+          >{{ player.firstName.toTitleCase() }}
+          {{ player.surname.toTitleCase() }}</mat-option
+        >
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-checkbox formControlName="isHome">Is Home Game?</mat-checkbox>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button type="button" (click)="submitForm(gameForm)">
+    Create Game
+  </button>
+  <button mat-button type="button" (click)="onNoClick()">No Thanks</button>
+</mat-dialog-actions>

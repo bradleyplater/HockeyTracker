@@ -1,0 +1,50 @@
+<div>
+  <span>
+    {{ game?.date?.toDateString() }}
+  </span>
+  <div class="border border-black m-8 pt-8 pb-8 flex justify-around rounded-md">
+    <span class="text-2xl self-center">{{ team?.name }}</span>
+
+    <div class="flex gap-40">
+      <span class="text-5xl bold">{{ game?.goalsScored }}</span>
+
+      <span class="self-center">Final</span>
+      <span class="text-5xl bold">{{ game?.goalsConceeded }}</span>
+    </div>
+
+    <span class="text-2xl self-center">{{
+      game?.opponentTeam?.toTitleCase()
+    }}</span>
+  </div>
+
+  <div class="flex flex-row justify-center gap-10">
+    <button mat-flat-button (click)="openAddGoalsDialog()">Add Goal</button>
+    <button mat-flat-button (click)="openAddPenaltyDialog()">
+      Add Penalty
+    </button>
+    <button mat-flat-button>Add Opponent Goal</button>
+  </div>
+
+  <div class="grid grid-rows-2 grid-cols-3 ml-8">
+    <div class="row-span-1 col-span-2">
+      <mat-tab-group>
+        <mat-tab label="Goals">
+          <app-goals-list></app-goals-list>
+        </mat-tab>
+        <mat-tab label="Penalties">
+          <app-penalty-list></app-penalty-list
+        ></mat-tab>
+        <mat-tab label="Table"> </mat-tab>
+      </mat-tab-group>
+    </div>
+
+    <div class="col-span-1">
+      <div class="border border-black rounded-md mr-8 ml-8 p-8">
+        <app-game-period-scores
+          [team]="team!"
+          [game]="game!"
+        ></app-game-period-scores>
+      </div>
+    </div>
+  </div>
+</div>

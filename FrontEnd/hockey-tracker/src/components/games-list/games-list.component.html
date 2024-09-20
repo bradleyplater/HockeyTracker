@@ -1,0 +1,57 @@
+<div>
+  <ul class="flex">
+    @for (game of gamesList(); track $index) {
+    <li class="p-2 w-48">
+      <a routerLinkActive="active" [routerLink]="['/games', game.id]">
+        <mat-card
+          class="p-4 flex flex-col text-center gap-2 hover:shadow-inner"
+          [ngClass]="{
+            '!bg-green-100': game.goalsScored > game.goalsConceeded,
+            '!bg-gray-100': game.goalsScored == game.goalsConceeded,
+            '!bg-red-100': game.goalsScored < game.goalsConceeded
+          }"
+        >
+          <div>
+            <span class="flex justify-center text-sm">
+              {{ team?.name }}
+            </span>
+            <span>
+              {{ game.goalsScored }}
+            </span>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <div>
+            <span class="flex justify-center text-sm">
+              {{ game.opponentTeam }}
+            </span>
+            <span>
+              {{ game.goalsConceeded }}
+            </span>
+          </div>
+
+          <mat-divider></mat-divider>
+          <mat-card-footer class="flex gap-2 justify-center items-center">
+            <span class="text-xs text-gray-500">
+              {{ game.type.toTitleCase() }}
+            </span>
+
+            <span class="text-xs text-gray-500">
+              {{ game.date.toLocaleDateString() }}
+            </span>
+          </mat-card-footer>
+        </mat-card>
+      </a>
+    </li>
+    }
+
+    <button (click)="openDialog()">
+      <mat-card
+        class="pr-4 pl-4 pt-20 pb-20 text-center bg-blue-300 hover:bg-blue-100"
+      >
+        Add new game
+      </mat-card>
+    </button>
+  </ul>
+</div>
