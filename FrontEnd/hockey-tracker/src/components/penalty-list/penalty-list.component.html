@@ -1,0 +1,25 @@
+<span class="text-lg text-gray-500 font-bold"> 1st Period</span>
+
+@if(!isLoading) { @for(penalty of sortedFirstPeriodPenalties; track $index) {
+<app-penalty-panel [penalty]="penalty"></app-penalty-panel>
+}@empty {
+<p>no penalties to show</p>
+} }
+
+<span class="text-lg text-gray-500 font-bold"> 2nd Period</span>
+
+@if(!isLoading) { @for(penalty of sortedSecondPeriodPenalties; track $index) {
+<app-penalty-panel [penalty]="penalty"></app-penalty-panel>
+
+}@empty {
+<p>no penalties to show</p>
+} }
+
+<span class="text-lg text-gray-500 font-bold"> 3rd Period</span>
+
+@if(!isLoading) { @for(penalty of sortedThirdPeriodPenalties; track $index) {
+<app-penalty-panel [penalty]="penalty"></app-penalty-panel>
+
+}@empty {
+<p>no penalties to show</p>
+} }

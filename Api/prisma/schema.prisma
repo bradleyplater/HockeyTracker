@@ -66,6 +66,7 @@ model Season {
 model Games {
   id                                                String            @id
   goals                                             Goals[]
+  opponentGoals                                     OpponentGoals[]
   teamCreatedBy                                     Teams             @relation(fields: [teamCreatedById], references: [id])
   teamCreatedById                                   String            
   opponentTeam                                      String
@@ -85,6 +86,15 @@ model Goals {
   scoredByPlayerId                                   String
   assist1                                            String?
   assist2                                            String?
+  time                                               Int              @default(0) // In seconds
+}
+
+model OpponentGoals {
+  id                                                 String           @id @default(uuid())
+  game                                               Games            @relation(fields: [gameId], references: [id])
+  gameId                                             String
+  scoredByPlayerFirstName                            String
+  scoredByPlayerSurname                              String
   time                                               Int              @default(0) // In seconds
 }
 

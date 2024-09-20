@@ -1,0 +1,23 @@
+<div
+  class="rounded-md border border-black grid grid-rows-1 grid-cols-2 mb-2 bg-green-200"
+>
+  <div class="p-4 content-center">
+    <span class="text-lg">{{ penalty.offender.toTitleCase() }}</span>
+  </div>
+  <div class="p-4 flex flex-row gap-2 justify-center">
+    <div class="rounded-md bg-gray-200 p-4 flex flex-col text-center min-w-28">
+      <span class="text-black font-bold">{{ penalty.type }}</span>
+      <span>Type</span>
+    </div>
+    <div class="rounded-md bg-gray-200 p-4 flex flex-col text-center min-w-28">
+      <span class="text-black font-bold">{{ penalty.duration }}</span>
+      <span>Duration</span>
+    </div>
+    <div class="rounded-md bg-gray-200 p-4 flex flex-col text-center min-w-28">
+      <span class="text-black font-bold">{{
+        FormatDurationFromSeconds(penalty.time!)
+      }}</span>
+      <span>Time</span>
+    </div>
+  </div>
+</div>

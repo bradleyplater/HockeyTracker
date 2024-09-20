@@ -1,0 +1,63 @@
+<h2 mat-dialog-title>Add Penalty</h2>
+<mat-dialog-content>
+  <form
+    [formGroup]="createPenaltyForm"
+    (ngSubmit)="onSubmit()"
+    #gameForm="ngForm"
+  >
+    <mat-form-field class="w-full">
+      <mat-label>Offender</mat-label>
+      <mat-select [formControl]="offender">
+        <mat-select-trigger>
+          {{ getDisplayText(this.createPenaltyForm.value.offender) }}
+        </mat-select-trigger>
+        @for (player of data.players; track $index) {
+        <mat-option [value]="player.id"
+          >{{ player.firstName.toTitleCase() }}
+          {{ player.surname.toTitleCase() }}</mat-option
+        >
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="w-full">
+      <mat-label>Type</mat-label>
+      <mat-select [formControl]="type">
+        <mat-select-trigger>
+          {{ this.createPenaltyForm.value.type }}
+        </mat-select-trigger>
+        @for (penalty of penaltyTypes; track $index) {
+        <mat-option [value]="penalty.toLowerCase()">{{ penalty }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Duration</mat-label>
+      <mat-select [formControl]="duration">
+        <mat-select-trigger>
+          {{ this.createPenaltyForm.value.duration }}
+        </mat-select-trigger>
+        @for (duration of penaltyDurations; track $index) {
+        <mat-option [value]="duration">{{ duration }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <div class="flex flex-row justify-around">
+      <mat-form-field class="">
+        <mat-label>Minute</mat-label>
+        <input matInput formControlName="minute" />
+      </mat-form-field>
+
+      <mat-form-field class="">
+        <mat-label>Second</mat-label>
+        <input matInput formControlName="second" />
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button type="button" (click)="submitForm(gameForm)">
+    Create Game
+  </button>
+  <button mat-button type="button" (click)="onNoClick()">No Thanks</button>
+</mat-dialog-actions>

@@ -1,6 +1,6 @@
 export interface PostGameModel {
     teamCreatedById: string;
-    opponentTeamName: string;
+    opponentTeam: string;
     isHome: boolean;
     players: { id: string }[];
     date: Date;

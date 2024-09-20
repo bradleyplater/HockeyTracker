@@ -8,7 +8,7 @@ const createGame = async (req: Request, res: Response) => {
     try {
         const {
             teamCreatedById,
-            opponentTeamName,
+            opponentTeam,
             isHome,
             players,
             date,
@@ -23,7 +23,7 @@ const createGame = async (req: Request, res: Response) => {
             data: {
                 id,
                 teamCreatedById: teamCreatedById,
-                opponentTeam: opponentTeamName,
+                opponentTeam: opponentTeam,
                 isHome: isHome,
                 players: {
                     connect: players,
@@ -40,6 +40,59 @@ const createGame = async (req: Request, res: Response) => {
     }
 };
 
+const getAllGames = async (req: Request, res: Response) => {
+    const teamId = req.params.teamId;
+    try {
+        if (teamId != null || teamId != undefined) {
+            const games = await prisma.games.findMany({
+                where: {
+                    teamCreatedById: teamId,
+                },
+            });
+
+            if (games.length > 0) {
+                res.status(200).json(games);
+            } else {
+                res.status(404).json();
+            }
+        } else {
+            res.status(400).json();
+        }
+    } catch (e) {
+        genericExceptionHandler(e, res);
+    }
+};
+
+const getGameById = async (req: Request, res: Response) => {
+    const gameId = req.params.gameId;
+    try {
+        if (gameId != null || gameId != undefined) {
+            const game = await prisma.games.findUnique({
+                where: {
+                    id: gameId,
+                },
+                include: {
+                    goals: true,
+                    opponentGoals: true,
+                    players: true,
+                    penalties: true,
+                },
+            });
+            if (game) {
+                res.status(200).json(game);
+            } else {
+                res.status(404).json();
+            }
+        } else {
+            res.status(400).json();
+        }
+    } catch (e) {
+        genericExceptionHandler(e, res);
+    }
+};
+
 export default {
     createGame,
+    getAllGames,
+    getGameById,
 };
