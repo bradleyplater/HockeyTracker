@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { PenaltyPanel } from '../../models/penalties';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-penalty-panel',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './penalty-panel.component.html',
   styleUrl: './penalty-panel.component.css',
 })

@@ -10,7 +10,11 @@ import {
 } from '@angular/material/dialog';
 import { Player } from '../../models/player';
 import { Team } from '../../models/team';
-import { PenaltyDTO, PenaltyPanel } from '../../models/penalties';
+import {
+  OpponentPenaltyDTO,
+  PenaltyDTO,
+  PenaltyPanel,
+} from '../../models/penalties';
 import {
   FormControl,
   FormGroup,
@@ -55,6 +59,7 @@ export class AddPenaltyDialogComponent {
     players: Player[];
     game: Game;
     team: Team;
+    isOpponentPenalty: boolean;
   }>(MAT_DIALOG_DATA);
 
   readonly penaltyTypes = Object.values(Penalties);
@@ -65,6 +70,8 @@ export class AddPenaltyDialogComponent {
   duration = new FormControl(0);
   minute = new FormControl('');
   second = new FormControl('');
+  opponentPlayerFirstName = new FormControl('');
+  opponentPlayerSurname = new FormControl('');
 
   createPenaltyForm = new FormGroup({
     offender: this.offender,
@@ -72,6 +79,8 @@ export class AddPenaltyDialogComponent {
     duration: this.duration,
     minute: this.minute,
     second: this.second,
+    opponentPlayerFirstName: this.opponentPlayerFirstName,
+    opponentPlayerSurname: this.opponentPlayerSurname,
   });
 
   onSubmit() {
@@ -81,24 +90,48 @@ export class AddPenaltyDialogComponent {
     const peanltyTimeInSeconds =
       parseInt(submittedForm.minute!) * 60 + parseInt(submittedForm.second!);
 
-    const createPenalty: PenaltyDTO = {
-      playerId: submittedForm.offender as string,
-      type: submittedForm.type as string,
-      duration: submittedForm.duration as number,
-      time: peanltyTimeInSeconds,
-      gameId: this.data.game.id as string,
-      teamId: this.data.team.id as string,
-    };
+    if (this.data.isOpponentPenalty) {
+      const createPenalty: OpponentPenaltyDTO = {
+        playerFirstName: submittedForm.opponentPlayerFirstName as string,
+        playerSurname: submittedForm.opponentPlayerSurname as string,
+        type: submittedForm.type as string,
+        duration: submittedForm.duration as number,
+        time: peanltyTimeInSeconds,
+        gameId: this.data.game.id as string,
+        teamId: this.data.team.id as string,
+      };
 
-    this.penaltyService.createPenalty(createPenalty).subscribe((penalty) => {
-      console.log('CreatedPenalty: ', penalty);
+      this.penaltyService
+        .createOpponentPenalty(createPenalty)
+        .subscribe((penalty) => {
+          console.log('CreatedPenalty: ', penalty);
 
-      this.data.game.penalties.push(penalty);
+          this.data.game.opponentPenalties.push(penalty);
 
-      this.gameSubject.updateSelectedGame(this.data.game);
+          this.gameSubject.updateSelectedGame(this.data.game);
 
-      this.dialogRef.close();
-    });
+          this.dialogRef.close();
+        });
+    } else {
+      const createPenalty: PenaltyDTO = {
+        playerId: submittedForm.offender as string,
+        type: submittedForm.type as string,
+        duration: submittedForm.duration as number,
+        time: peanltyTimeInSeconds,
+        gameId: this.data.game.id as string,
+        teamId: this.data.team.id as string,
+      };
+
+      this.penaltyService.createPenalty(createPenalty).subscribe((penalty) => {
+        console.log('CreatedPenalty: ', penalty);
+
+        this.data.game.penalties.push(penalty);
+
+        this.gameSubject.updateSelectedGame(this.data.game);
+
+        this.dialogRef.close();
+      });
+    }
   }
 
   onNoClick(): void {

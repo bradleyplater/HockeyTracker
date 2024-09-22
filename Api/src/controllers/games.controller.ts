@@ -76,6 +76,7 @@ const getGameById = async (req: Request, res: Response) => {
                     opponentGoals: true,
                     players: true,
                     penalties: true,
+                    opponentPenalties: true,
                 },
             });
             if (game) {

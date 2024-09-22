@@ -67,6 +67,7 @@ model Games {
   id                                                String            @id
   goals                                             Goals[]
   opponentGoals                                     OpponentGoals[]
+  opponentPenalties                                 OpponentPenalties[]
   teamCreatedBy                                     Teams             @relation(fields: [teamCreatedById], references: [id])
   teamCreatedById                                   String            
   opponentTeam                                      String
@@ -103,6 +104,17 @@ model Penalties {
   game                                               Games            @relation(fields: [gameId], references: [id])
   gameId                                             String
   playerId                                           String
+  type                                               String
+  duration                                           Int              @default(0)
+  time                                               Int              @default(0) // In seconds
+}
+
+model OpponentPenalties {
+  id                                                 Int              @id @default(autoincrement())
+  game                                               Games            @relation(fields: [gameId], references: [id])
+  gameId                                             String
+  playerFirstName                                    String
+  playerSurname                                      String
   type                                               String
   duration                                           Int              @default(0)
   time                                               Int              @default(0) // In seconds

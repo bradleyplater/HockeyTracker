@@ -1,6 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Penalty, PenaltyDTO } from '../../models/penalties';
+import {
+  OpponentPenalty,
+  OpponentPenaltyDTO,
+  Penalty,
+  PenaltyDTO,
+} from '../../models/penalties';
 const BASE_URL = 'http://localhost:8080/api/v1';
 
 @Injectable({
@@ -11,5 +16,12 @@ export class PenaltiesService {
 
   createPenalty(penalty: PenaltyDTO) {
     return this.http.post<Penalty>(BASE_URL + '/penalties/create', penalty);
+  }
+
+  createOpponentPenalty(penalty: OpponentPenaltyDTO) {
+    return this.http.post<OpponentPenalty>(
+      BASE_URL + '/penalties/create/opponentPenalty',
+      penalty
+    );
   }
 }

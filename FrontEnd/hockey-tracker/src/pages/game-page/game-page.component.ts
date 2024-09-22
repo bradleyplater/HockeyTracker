@@ -155,4 +155,22 @@ export class GamePageComponent {
       console.log('The dialog was closed');
     });
   }
+
+  openAddOpponentPenaltyDialog() {
+    const dialogRef = this.addPenaltyDialog.open(AddPenaltyDialogComponent, {
+      data: {
+        players: this.game?.players,
+        game: this.game,
+        team: this.team,
+        isOpponentPenalty: true,
+      },
+
+      width: '600px',
+      height: '550px',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('The dialog was closed');
+    });
+  }
 }

@@ -1,5 +1,5 @@
 import { Goal, OpponentGoal } from './goal';
-import { Penalty } from './penalties';
+import { OpponentPenalty, Penalty } from './penalties';
 import { Player } from './player';
 
 export interface Game {
@@ -15,11 +15,17 @@ export interface Game {
   goals: Goal[];
   opponentGoals: OpponentGoal[];
   penalties: Penalty[];
+  opponentPenalties: OpponentPenalty[];
 }
 
 export type GameDto = Omit<
   Game,
-  'id' | 'goals' | 'opponentGoals' | 'penalties' | 'players'
+  | 'id'
+  | 'goals'
+  | 'opponentGoals'
+  | 'penalties'
+  | 'opponentPenalties'
+  | 'players'
 > & {
   players: { id: string }[];
 };
