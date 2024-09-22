@@ -118,6 +118,27 @@ export class GamePageComponent {
     });
   }
 
+  openAddOpponentGoalsDialog() {
+    const dialogRef = this.addGoalDialog.open(AddGoalDialogComponent, {
+      data: {
+        players: this.team?.players?.filter((player) =>
+          this.game?.players.some((gamePlayer) => gamePlayer.id == player.id)
+        ),
+        game: this.game,
+        team: this.team,
+        goalsList: this.totalGoals,
+        isOpponentGoal: true,
+      },
+
+      width: '600px',
+      height: '550px',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('The dialog was closed');
+    });
+  }
+
   openAddPenaltyDialog() {
     const dialogRef = this.addPenaltyDialog.open(AddPenaltyDialogComponent, {
       data: {

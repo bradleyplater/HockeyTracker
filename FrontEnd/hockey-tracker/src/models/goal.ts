@@ -36,3 +36,11 @@ export interface GoalDTO {
   teamId: string;
   gameId: string;
 }
+
+export interface OpponentGoalDTO {
+  scoredByPlayerFirstName: string;
+  scoredByPlayerSurname: string;
+  time: number; // in seconds
+  teamId: string;
+  gameId: string;
+}
