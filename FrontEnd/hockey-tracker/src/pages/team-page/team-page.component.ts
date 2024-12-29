@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { TeamsService } from '../../services/teams/teams.service';
 import { TeamSubject } from '../../subjects/teams.subject';
 
@@ -12,11 +12,17 @@ import { BehaviorSubject } from 'rxjs';
 import { GamesListComponent } from '../../components/games-list/games-list.component';
 import { GamesService } from '../../services/games/games.service';
 import { GamesSubject } from '../../subjects/games.subject';
+import { TeamStatsComponent } from '../../components/team-stats/team-stats.component';
 
 @Component({
   selector: 'app-team-page',
   standalone: true,
-  imports: [PlayersListComponent, MatTabsModule, GamesListComponent],
+  imports: [
+    PlayersListComponent,
+    MatTabsModule,
+    GamesListComponent,
+    TeamStatsComponent,
+  ],
   templateUrl: './team-page.component.html',
   styleUrl: './team-page.component.css',
 })

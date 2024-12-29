@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { GamesSubject } from '../../subjects/games.subject';
 import { OpponentPenalty, Penalty, PenaltyPanel } from '../../models/penalties';
 import { PenaltyPanelComponent } from '../penalty-panel/penalty-panel.component';
+import { Penalties } from '../../contants/penalties';
 
 @Component({
   selector: 'app-penalty-list',
@@ -48,7 +49,7 @@ export class PenaltyListComponent {
           offender: `${offender?.firstName!.toTitleCase()} ${offender?.surname!.toTitleCase()}`,
           duration: penalty.duration,
           time: penalty.time,
-          type: penalty.type,
+          type: Penalties[penalty.type as keyof typeof Penalties],
           isOpponentPenalty: false,
         });
 
@@ -78,7 +79,7 @@ export class PenaltyListComponent {
           offender: `${penalty.playerFirstName.toTitleCase()} ${penalty.playerSurname.toTitleCase()}`,
           duration: penalty.duration,
           time: penalty.time,
-          type: penalty.type,
+          type: Penalties[penalty.type as keyof typeof Penalties],
           isOpponentPenalty: true,
         });
 

@@ -3,7 +3,7 @@
     {{ game?.date?.toDateString() }}
   </span>
   <div class="border border-black m-8 pt-8 pb-8 flex justify-around rounded-md">
-    <span class="text-2xl self-center">{{ team?.name }}</span>
+    <span class="text-2xl self-center">{{ (game?.teamCreatedBy)!.name }}</span>
 
     <div class="flex gap-40">
       <span class="text-5xl bold">{{ game?.goalsScored }}</span>
@@ -30,7 +30,7 @@
     </button>
   </div>
 
-  <div class="grid grid-rows-2 grid-cols-3 ml-8">
+  <div class="grid grid-rows-1 grid-cols-3 ml-8">
     <div class="row-span-1 col-span-2">
       <mat-tab-group>
         <mat-tab label="Goals">
@@ -39,16 +39,18 @@
         <mat-tab label="Penalties">
           <app-penalty-list></app-penalty-list
         ></mat-tab>
-        <mat-tab label="Table"> </mat-tab>
+        <mat-tab label="Table">
+          <app-game-table></app-game-table>
+        </mat-tab>
       </mat-tab-group>
     </div>
 
     <div class="col-span-1">
+      <div class="border border-black rounded-md mr-8 ml-8 mb-8 p-8">
+        <app-game-period-scores></app-game-period-scores>
+      </div>
       <div class="border border-black rounded-md mr-8 ml-8 p-8">
-        <app-game-period-scores
-          [team]="team!"
-          [game]="game!"
-        ></app-game-period-scores>
+        <app-game-power-play></app-game-power-play>
       </div>
     </div>
   </div>

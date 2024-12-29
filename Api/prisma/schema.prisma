@@ -30,10 +30,10 @@ model Players {
 
 model PlayersInTeams {
   player          Players               @relation(fields: [playerId], references: [id])
-  playerId        String                @unique
+  playerId        String
   team            Teams                 @relation(fields: [teamId], references: [id])
   teamId          String
-  playerNumber    Int?                  @unique
+  playerNumber    Int?                  
   stats           PlayerStats[]
 
   @@id([playerId, teamId])
@@ -45,11 +45,11 @@ model PlayerStats {
   playerId                                           String
   season                                             Season           @relation(fields: [seasonId], references: [id])
   seasonId                                           String
-  numberOfGoals                                      Int?             @default(0)
-  numberOfAssists                                    Int?             @default(0)
+  numberOfGoals                                      Int?             @default(0) @map("numberOfGoals")
+  numberOfAssists                                    Int?             @default(0) @map("numberOfAssists")
   gamesPlayed                                        Int?             @default(0)
-  pims                                               Int?             @default(0)
-  totalPoints                                        Int              @default(0)
+  pims                                               Int?             @default(0) 
+  totalPoints                                        Int              @default(0) @map("totalPoints")
   teamId                                             String?          
   playerInTeam                                       PlayersInTeams?  @relation(fields: [playerId, teamId], references: [playerId, teamId])
 }
@@ -59,6 +59,7 @@ model Season {
   name                  String            @unique
   startDate             DateTime
   endDate               DateTime
+  games                 Games[]
 
   playerStats           PlayerStats[]
 }
@@ -77,7 +78,9 @@ model Games {
   players                                           Players[]
   penalties                                         Penalties[]
   date                                              DateTime
-  type                                              String          @default("challenge")   
+  type                                              String          @default("challenge")
+  season                                            Season          @relation(fields: [seasonId], references: [id])
+  seasonId                                          String          @default("SSN120")
 }
 
 model Goals {
@@ -87,6 +90,7 @@ model Goals {
   scoredByPlayerId                                   String
   assist1                                            String?
   assist2                                            String?
+  type                                               String           @default("even")
   time                                               Int              @default(0) // In seconds
 }
 
@@ -96,6 +100,7 @@ model OpponentGoals {
   gameId                                             String
   scoredByPlayerFirstName                            String
   scoredByPlayerSurname                              String
+  type                                               String           @default("even")
   time                                               Int              @default(0) // In seconds
 }
 

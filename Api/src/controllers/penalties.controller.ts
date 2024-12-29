@@ -78,7 +78,6 @@ const createOpponentPenalty = async (req: Request, res: Response) => {
             type,
             duration,
             time,
-            teamId,
         }: OpponentPenaltyPostModel = req.body;
 
         // Validate PenaltyPostModel

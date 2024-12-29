@@ -1,0 +1,26 @@
+<h4>Power play</h4>
+<div class="mb-4">
+  <p>{{ game?.teamCreatedBy?.name?.toTitleCase() }}</p>
+  <mat-progress-bar
+    mode="determinate"
+    value="{{ teamCreatedByPPPercentage }}"
+  ></mat-progress-bar>
+  <p class="text-gray-400 text-sm">
+    {{ teamCreatedByPPGoals }}/{{ opponentPenaltyNumber }} ({{
+      teamCreatedByPPPercentage
+    }}%)
+  </p>
+</div>
+
+<div>
+  <p>{{ game?.opponentTeam?.toTitleCase() }}</p>
+  <mat-progress-bar
+    mode="determinate"
+    value="{{ opponentTeamPPPercentage }}"
+  ></mat-progress-bar>
+  <p class="text-gray-400 text-sm">
+    {{ opponentPPGoals }}/{{ teamCreatedByPenaltyNumber }} ({{
+      opponentTeamPPPercentage
+    }}%)
+  </p>
+</div>

@@ -5,4 +5,5 @@ export interface GoalPostModel {
     assist2: string;
     time: number; // In seconds
     teamId: string;
+    type: string;
 }

@@ -28,6 +28,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { GamesSubject } from '../../subjects/games.subject';
 import { PenaltyListComponent } from '../../components/penalty-list/penalty-list.component';
 import { AddPenaltyDialogComponent } from '../../components/add-penalty-dialog/add-penalty-dialog.component';
+import { GamePowerPlayComponent } from '../../components/game-power-play/game-power-play.component';
+import { GameTableComponent } from '../../components/game-table/game-table.component';
 
 @Component({
   selector: 'app-game-page',
@@ -43,6 +45,8 @@ import { AddPenaltyDialogComponent } from '../../components/add-penalty-dialog/a
     GoalsListComponent,
     GamePeriodScoresComponent,
     PenaltyListComponent,
+    GamePowerPlayComponent,
+    GameTableComponent,
   ],
   templateUrl: './game-page.component.html',
   styleUrl: './game-page.component.css',
@@ -53,7 +57,8 @@ export class GamePageComponent {
     private gamesService: GamesService,
     private teamService: TeamsService,
     private goalsSubject: GoalsSubject,
-    private gameSubject: GamesSubject
+    private gameSubject: GamesSubject,
+    private cdr: ChangeDetectorRef
   ) {}
 
   readonly addGoalDialog = inject(MatDialog);
@@ -79,31 +84,16 @@ export class GamePageComponent {
     }
 
     this.gamesService.getGameById(gameId).subscribe((game) => {
-      this.game = game;
-
       this.gameSubject.updateSelectedGame(game);
-
-      if (this.game) {
-        this.teamService
-          .getTeamById(this.game?.teamCreatedById)
-          .subscribe((team) => {
-            this.team = team;
-            if (this.team) {
-              this.isLoading = false;
-            }
-          });
-      } else {
-        this.isLoading = false;
-      }
+      this.game = game;
+      this.isLoading = false;
     });
   }
 
   openAddGoalsDialog() {
     const dialogRef = this.addGoalDialog.open(AddGoalDialogComponent, {
       data: {
-        players: this.team?.players?.filter((player) =>
-          this.game?.players.some((gamePlayer) => gamePlayer.id == player.id)
-        ),
+        players: this.game?.players,
         game: this.game,
         team: this.team,
         goalsList: this.totalGoals,
@@ -121,9 +111,7 @@ export class GamePageComponent {
   openAddOpponentGoalsDialog() {
     const dialogRef = this.addGoalDialog.open(AddGoalDialogComponent, {
       data: {
-        players: this.team?.players?.filter((player) =>
-          this.game?.players.some((gamePlayer) => gamePlayer.id == player.id)
-        ),
+        players: this.game?.players,
         game: this.game,
         team: this.team,
         goalsList: this.totalGoals,

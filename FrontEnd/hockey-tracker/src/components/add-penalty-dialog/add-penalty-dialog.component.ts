@@ -94,11 +94,10 @@ export class AddPenaltyDialogComponent {
       const createPenalty: OpponentPenaltyDTO = {
         playerFirstName: submittedForm.opponentPlayerFirstName as string,
         playerSurname: submittedForm.opponentPlayerSurname as string,
-        type: submittedForm.type as string,
+        type: this.getPenaltyKey(submittedForm.type as string),
         duration: submittedForm.duration as number,
         time: peanltyTimeInSeconds,
         gameId: this.data.game.id as string,
-        teamId: this.data.team.id as string,
       };
 
       this.penaltyService
@@ -115,11 +114,11 @@ export class AddPenaltyDialogComponent {
     } else {
       const createPenalty: PenaltyDTO = {
         playerId: submittedForm.offender as string,
-        type: submittedForm.type as string,
+        type: this.getPenaltyKey(submittedForm.type as string),
         duration: submittedForm.duration as number,
         time: peanltyTimeInSeconds,
         gameId: this.data.game.id as string,
-        teamId: this.data.team.id as string,
+        teamId: this.data.game.teamCreatedBy.id as string,
       };
 
       this.penaltyService.createPenalty(createPenalty).subscribe((penalty) => {
@@ -154,5 +153,12 @@ export class AddPenaltyDialogComponent {
     }
 
     return 'Unknown';
+  }
+
+  getPenaltyKey(value: string): string {
+    const entry = Object.entries(Penalties).find(
+      ([key, val]) => val.toLowerCase() === value
+    );
+    return entry ? entry[0] : value; // Return the key if found, otherwise the original value
   }
 }

@@ -42,7 +42,15 @@ const getTeamById = async (req: Request, res: Response) => {
             include: {
                 players: {
                     include: {
-                        player: true,
+                        player: {
+                            include: {
+                                stats: {
+                                    where: {
+                                        teamId: teamId,
+                                    },
+                                },
+                            },
+                        },
                     },
                 },
             },
@@ -60,6 +68,18 @@ const getTeamById = async (req: Request, res: Response) => {
                         firstName: player.player.firstName,
                         surname: player.player.surname,
                         number: player.playerNumber,
+                        stats: player.player.stats.map((stats) => {
+                            return {
+                                id: stats.id,
+                                playerId: stats.playerId,
+                                seasonId: stats.seasonId,
+                                goals: stats.numberOfGoals,
+                                assists: stats.numberOfAssists,
+                                gamesPlayed: stats.gamesPlayed,
+                                pims: stats.pims,
+                                points: stats.totalPoints,
+                            };
+                        }),
                     } as Player;
                 }),
             };

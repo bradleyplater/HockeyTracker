@@ -21,9 +21,7 @@ export type PenaltyDTO = Omit<Penalty, 'id'> & {
   teamId: string;
 };
 
-export type OpponentPenaltyDTO = Omit<OpponentPenalty, 'id'> & {
-  teamId: string;
-};
+export type OpponentPenaltyDTO = Omit<OpponentPenalty, 'id'>;
 
 export interface PenaltyPanel {
   offender: string;

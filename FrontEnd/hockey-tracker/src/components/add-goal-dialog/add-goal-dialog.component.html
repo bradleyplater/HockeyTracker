@@ -10,6 +10,15 @@
       <mat-label>Scorers Surname</mat-label>
       <input matInput formControlName="opponentScorerSurname" />
     </mat-form-field>
+    <mat-form-field class="w-full">
+      <mat-label>Goal Type</mat-label>
+      <mat-select [formControl]="type">
+        <mat-select-trigger> Goal Type </mat-select-trigger>
+        <mat-option value="even">Even</mat-option>
+        <mat-option value="short">Short Handed</mat-option>
+        <mat-option value="power">Power Play</mat-option>
+      </mat-select>
+    </mat-form-field>
     <div class="flex flex-row justify-around">
       <mat-form-field>
         <mat-label>Minute</mat-label>
@@ -63,6 +72,16 @@
           {{ player.surname.toTitleCase() }}</mat-option
         >
         }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Goal Type</mat-label>
+      <mat-select [formControl]="type">
+        <mat-select-trigger> Goal Type </mat-select-trigger>
+        <mat-option value="even">Even</mat-option>
+        <mat-option value="short">Short Handed</mat-option>
+        <mat-option value="power">Power Play</mat-option>
       </mat-select>
     </mat-form-field>
     <div class="flex flex-row justify-around">

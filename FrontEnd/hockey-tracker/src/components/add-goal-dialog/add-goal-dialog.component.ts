@@ -68,6 +68,7 @@ export class AddGoalDialogComponent {
   assist2 = new FormControl('');
   minute = new FormControl('');
   second = new FormControl('');
+  type = new FormControl('');
   opponentScorerFirstName = new FormControl('');
   opponentScorerSurname = new FormControl('');
 
@@ -77,12 +78,12 @@ export class AddGoalDialogComponent {
     assist2: this.assist2,
     minute: this.minute,
     second: this.second,
+    type: this.type,
     opponentScorerFirstName: this.opponentScorerFirstName,
     opponentScorerSurname: this.opponentScorerSurname,
   });
 
   onSubmit() {
-    //TODO: Use this dialog to determine if it is home goal or opponent goal to remove duplication
     const submittedForm = this.createGoalForm.value;
 
     const goalTimeInSeconds =
@@ -94,8 +95,8 @@ export class AddGoalDialogComponent {
           submittedForm.opponentScorerFirstName as string,
         scoredByPlayerSurname: submittedForm.opponentScorerSurname as string,
         time: goalTimeInSeconds,
+        type: submittedForm.type as string,
         gameId: this.data.game.id as string,
-        teamId: this.data.team.id as string,
       };
 
       this.goalsService.createOpponentGoal(createGoal).subscribe((goal) => {
@@ -113,8 +114,9 @@ export class AddGoalDialogComponent {
         assist1: submittedForm.assist1 as string,
         assist2: submittedForm.assist2 as string,
         time: goalTimeInSeconds,
+        type: submittedForm.type as string,
         gameId: this.data.game.id as string,
-        teamId: this.data.team.id as string,
+        teamId: this.data.game.teamCreatedBy.id as string,
       };
 
       this.goalsService.createGoal(createGoal).subscribe((goal) => {

@@ -64,6 +64,7 @@ export class CreateGameDialogComponent {
     date: new FormControl(''),
     isHome: new FormControl(false),
     type: new FormControl(''),
+    season: new FormControl(''),
     players: this.selectedPlayers,
   });
 
@@ -85,6 +86,7 @@ export class CreateGameDialogComponent {
       teamCreatedById: this.data.teamId,
       goalsScored: 0,
       goalsConceeded: 0,
+      seasonId: submittedForm.season as string,
     };
 
     this.gamesService.createGame(createGame).subscribe((game) => {

@@ -50,8 +50,8 @@ export class GoalsListComponent {
 
       this.goalsList = this.updateGoalsWithScoreTrack(
         this.goalsList,
-        'PET',
-        'AWA'
+        game.teamCreatedBy.name.substring(0, 3).toUpperCase(),
+        game.opponentTeam.substring(0, 3).toUpperCase()
       );
 
       this.firstPeriodGoals.set(

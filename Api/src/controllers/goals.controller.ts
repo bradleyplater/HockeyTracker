@@ -15,6 +15,7 @@ const createGoal = async (req: Request, res: Response) => {
             assist2,
             time,
             teamId,
+            type,
         }: GoalPostModel = req.body;
 
         // Validate GoalPostModel
@@ -28,6 +29,7 @@ const createGoal = async (req: Request, res: Response) => {
                 assist2,
                 gameId,
                 time,
+                type,
             },
         });
 
@@ -119,8 +121,13 @@ const createGoal = async (req: Request, res: Response) => {
 
 const createOpponentGoal = async (req: Request, res: Response) => {
     try {
-        const { gameId, scoredByPlayerFirstName, scoredByPlayerSurname, time } =
-            req.body;
+        const {
+            gameId,
+            scoredByPlayerFirstName,
+            scoredByPlayerSurname,
+            time,
+            type,
+        } = req.body;
 
         // Add goal to goals table
         const goal = await prisma.opponentGoals.create({
@@ -130,6 +137,7 @@ const createOpponentGoal = async (req: Request, res: Response) => {
                 scoredByPlayerFirstName,
                 scoredByPlayerSurname,
                 time,
+                type,
             },
         });
 
