@@ -3,6 +3,9 @@ export enum Penalties {
   BOARD = 'Board',
   CHARG = 'Charging',
   CROSS = 'Cross Check',
+  BDYCH = 'Body Checking',
+  CHECK = 'Checking',
+  CHEB = 'Checking From Behind',
   DELAY = 'Delay of Game',
   ELBOW = 'Elbow',
   FIGHT = 'Fight',
@@ -21,7 +24,6 @@ export enum Penalties {
   UNSP = 'Un-Sportsman like',
   MISC = 'Misconduct',
   HIST = 'High Stick',
-  CHECK = 'Checking',
   THROWSTICK = 'Throwing Stick',
   ILLEQUIP = 'Illegal Equipment',
 }

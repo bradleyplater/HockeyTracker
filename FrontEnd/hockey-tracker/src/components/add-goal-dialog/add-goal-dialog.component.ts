@@ -18,10 +18,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
-import { GoalDTO, GoalPanel, ScoreTrack } from '../../models/goal';
+import {
+  GoalDTO,
+  GoalPanel,
+  OpponentGoal,
+  OpponentGoalDTO,
+  ScoreTrack,
+} from '../../models/goal';
 import { GoalsService } from '../../services/goals/goals.service';
 import { Team } from '../../models/team';
 import { GoalsSubject } from '../../subjects/goals.subject';
+import { GamesSubject } from '../../subjects/games.subject';
+import { Game } from '../../models/game';
 
 @Component({
   selector: 'app-add-goal-dialog',
@@ -44,15 +52,15 @@ import { GoalsSubject } from '../../subjects/goals.subject';
 export class AddGoalDialogComponent {
   constructor(
     private goalsService: GoalsService,
-    private goalsSubject: GoalsSubject
+    private gamesSubject: GamesSubject
   ) {}
 
   readonly dialogRef = inject(MatDialogRef<AddGoalDialogComponent>);
   readonly data = inject<{
     players: Player[];
-    gameId: string;
+    game: Game;
     team: Team;
-    goalsList: WritableSignal<GoalPanel[]>;
+    isOpponentGoal: boolean;
   }>(MAT_DIALOG_DATA);
 
   scoredBy = new FormControl('');
@@ -60,6 +68,9 @@ export class AddGoalDialogComponent {
   assist2 = new FormControl('');
   minute = new FormControl('');
   second = new FormControl('');
+  type = new FormControl('');
+  opponentScorerFirstName = new FormControl('');
+  opponentScorerSurname = new FormControl('');
 
   createGoalForm = new FormGroup({
     scoredBy: this.scoredBy,
@@ -67,55 +78,57 @@ export class AddGoalDialogComponent {
     assist2: this.assist2,
     minute: this.minute,
     second: this.second,
+    type: this.type,
+    opponentScorerFirstName: this.opponentScorerFirstName,
+    opponentScorerSurname: this.opponentScorerSurname,
   });
 
   onSubmit() {
-    //TODO: Use this dialog to determine if it is home goal or opponent goal to remove duplication
     const submittedForm = this.createGoalForm.value;
 
     const goalTimeInSeconds =
       parseInt(submittedForm.minute!) * 60 + parseInt(submittedForm.second!);
 
-    const createGoal: GoalDTO = {
-      scoredByPlayerId: submittedForm.scoredBy as string,
-      assist1: submittedForm.assist1 as string,
-      assist2: submittedForm.assist2 as string,
-      time: goalTimeInSeconds,
-      gameId: this.data.gameId as string,
-      teamId: this.data.team.id as string,
-    };
+    if (this.data.isOpponentGoal) {
+      const createGoal: OpponentGoalDTO = {
+        scoredByPlayerFirstName:
+          submittedForm.opponentScorerFirstName as string,
+        scoredByPlayerSurname: submittedForm.opponentScorerSurname as string,
+        time: goalTimeInSeconds,
+        type: submittedForm.type as string,
+        gameId: this.data.game.id as string,
+      };
 
-    this.goalsService.createGame(createGoal).subscribe((goal) => {
-      console.log('CreatedGoal: ', goal);
+      this.goalsService.createOpponentGoal(createGoal).subscribe((goal) => {
+        console.log('Created Opponent Goal: ', goal);
 
-      const goalScorer = this.data.team?.players!.find(
-        (player) => player.id === goal.scoredByPlayerId
-      );
-      const assist1 = this.data.team?.players!.find(
-        (player) => player.id === goal.assist1
-      );
-      const assist2 = this.data.team?.players!.find(
-        (player) => player.id === goal.assist2
-      );
+        this.data.game.opponentGoals.push(goal);
 
-      this.goalsSubject.updateTotalGoals([
-        ...this.data.goalsList(),
-        {
-          scoredBy: goalScorer
-            ? `${goalScorer.firstName.toTitleCase()} ${goalScorer.surname.toTitleCase()}`
-            : '',
-          assist1: assist1
-            ? `${assist1.firstName.toTitleCase()} ${assist1.surname.toTitleCase()}`
-            : '',
-          assist2: assist2
-            ? `${assist2.firstName.toTitleCase()} ${assist2.surname.toTitleCase()}`
-            : '',
-          time: goal.time,
-          isOpponentGoal: false,
-        },
-      ]);
-      this.dialogRef.close();
-    });
+        this.gamesSubject.updateSelectedGame(this.data.game);
+
+        this.dialogRef.close();
+      });
+    } else {
+      const createGoal: GoalDTO = {
+        scoredByPlayerId: submittedForm.scoredBy as string,
+        assist1: submittedForm.assist1 as string,
+        assist2: submittedForm.assist2 as string,
+        time: goalTimeInSeconds,
+        type: submittedForm.type as string,
+        gameId: this.data.game.id as string,
+        teamId: this.data.game.teamCreatedBy.id as string,
+      };
+
+      this.goalsService.createGoal(createGoal).subscribe((goal) => {
+        console.log('CreatedGoal: ', goal);
+
+        this.data.game.goals.push(goal);
+
+        this.gamesSubject.updateSelectedGame(this.data.game);
+
+        this.dialogRef.close();
+      });
+    }
   }
 
   onNoClick(): void {

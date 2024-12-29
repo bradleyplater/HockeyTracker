@@ -1,7 +1,8 @@
 import { Component, signal } from '@angular/core';
 import { GamesSubject } from '../../subjects/games.subject';
-import { Penalty, PenaltyPanel } from '../../models/penalties';
+import { OpponentPenalty, Penalty, PenaltyPanel } from '../../models/penalties';
 import { PenaltyPanelComponent } from '../penalty-panel/penalty-panel.component';
+import { Penalties } from '../../contants/penalties';
 
 @Component({
   selector: 'app-penalty-list',
@@ -45,10 +46,11 @@ export class PenaltyListComponent {
         );
 
         this.penalties.push({
-          offender: offender?.firstName!,
+          offender: `${offender?.firstName!.toTitleCase()} ${offender?.surname!.toTitleCase()}`,
           duration: penalty.duration,
           time: penalty.time,
-          type: penalty.type,
+          type: Penalties[penalty.type as keyof typeof Penalties],
+          isOpponentPenalty: false,
         });
 
         this.firstPeriodPenalties.set(
@@ -71,6 +73,38 @@ export class PenaltyListComponent {
           )
         );
       });
+
+      game?.opponentPenalties.forEach((penalty: OpponentPenalty) => {
+        this.penalties.push({
+          offender: `${penalty.playerFirstName.toTitleCase()} ${penalty.playerSurname.toTitleCase()}`,
+          duration: penalty.duration,
+          time: penalty.time,
+          type: Penalties[penalty.type as keyof typeof Penalties],
+          isOpponentPenalty: true,
+        });
+
+        this.firstPeriodPenalties.set(
+          this.penalties.filter((penalty) => penalty.time <= this.twentyMinutes)
+        );
+
+        this.secondPeriodPenalties.set(
+          this.penalties.filter(
+            (penalty) =>
+              penalty.time > this.twentyMinutes &&
+              penalty.time <= this.fortyMinutes
+          )
+        );
+
+        this.thirdPeriodPenalties.set(
+          this.penalties.filter(
+            (penalty) =>
+              penalty.time > this.fortyMinutes &&
+              penalty.time <= this.sixtyMinutes
+          )
+        );
+      });
+
+      console.log(this.penalties);
 
       this.isLoading = false;
     });

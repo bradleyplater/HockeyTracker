@@ -1,6 +1,36 @@
 <h2 mat-dialog-title>Add Goal</h2>
 <mat-dialog-content>
   <form [formGroup]="createGoalForm" (ngSubmit)="onSubmit()" #gameForm="ngForm">
+    @if(data.isOpponentGoal) {
+    <mat-form-field [floatLabel]="'auto'" class="w-full">
+      <mat-label>Scorers First Name</mat-label>
+      <input matInput formControlName="opponentScorerFirstName" />
+    </mat-form-field>
+    <mat-form-field [floatLabel]="'auto'" class="w-full">
+      <mat-label>Scorers Surname</mat-label>
+      <input matInput formControlName="opponentScorerSurname" />
+    </mat-form-field>
+    <mat-form-field class="w-full">
+      <mat-label>Goal Type</mat-label>
+      <mat-select [formControl]="type">
+        <mat-select-trigger> Goal Type </mat-select-trigger>
+        <mat-option value="even">Even</mat-option>
+        <mat-option value="short">Short Handed</mat-option>
+        <mat-option value="power">Power Play</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div class="flex flex-row justify-around">
+      <mat-form-field>
+        <mat-label>Minute</mat-label>
+        <input matInput formControlName="minute" />
+      </mat-form-field>
+
+      <mat-form-field class="">
+        <mat-label>Second</mat-label>
+        <input matInput formControlName="second" />
+      </mat-form-field>
+    </div>
+    } @else {
     <mat-form-field class="w-full">
       <mat-label>Goal Scorer</mat-label>
       <mat-select [formControl]="scoredBy">
@@ -44,6 +74,16 @@
         }
       </mat-select>
     </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Goal Type</mat-label>
+      <mat-select [formControl]="type">
+        <mat-select-trigger> Goal Type </mat-select-trigger>
+        <mat-option value="even">Even</mat-option>
+        <mat-option value="short">Short Handed</mat-option>
+        <mat-option value="power">Power Play</mat-option>
+      </mat-select>
+    </mat-form-field>
     <div class="flex flex-row justify-around">
       <mat-form-field class="">
         <mat-label>Minute</mat-label>
@@ -55,6 +95,7 @@
         <input matInput formControlName="second" />
       </mat-form-field>
     </div>
+    }
   </form>
 </mat-dialog-content>
 <mat-dialog-actions>

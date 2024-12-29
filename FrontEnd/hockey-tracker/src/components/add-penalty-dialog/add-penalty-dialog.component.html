@@ -5,6 +5,16 @@
     (ngSubmit)="onSubmit()"
     #gameForm="ngForm"
   >
+    @if(data.isOpponentPenalty){
+    <mat-form-field [floatLabel]="'auto'" class="w-full">
+      <mat-label>Offenders First Name</mat-label>
+      <input matInput formControlName="opponentPlayerFirstName" />
+    </mat-form-field>
+    <mat-form-field [floatLabel]="'auto'" class="w-full">
+      <mat-label>Offenders Surname</mat-label>
+      <input matInput formControlName="opponentPlayerSurname" />
+    </mat-form-field>
+    } @else {
     <mat-form-field class="w-full">
       <mat-label>Offender</mat-label>
       <mat-select [formControl]="offender">
@@ -19,6 +29,8 @@
         }
       </mat-select>
     </mat-form-field>
+    }
+
     <mat-form-field class="w-full">
       <mat-label>Type</mat-label>
       <mat-select [formControl]="type">

@@ -5,4 +5,5 @@ export interface PostGameModel {
     players: { id: string }[];
     date: Date;
     type: 'challenge' | 'cup';
+    seasonId: string;
 }

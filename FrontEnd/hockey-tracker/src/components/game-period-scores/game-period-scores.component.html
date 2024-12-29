@@ -1,6 +1,6 @@
 <h4>Line Score</h4>
 
-@if(isLoading) {
+@if(!isLoading) {
 <table mat-table [dataSource]="periodScoresArray">
   <!-- Position Column -->
   <ng-container matColumnDef="team">

@@ -6,6 +6,16 @@
       <input class="w-48" matInput formControlName="opponentTeam" />
     </mat-form-field>
     <mat-form-field class="w-full">
+      <mat-label>Season</mat-label>
+      <mat-select formControlName="season">
+        <mat-option value="SSN110">23-24</mat-option>
+        <mat-option value="SSN120">24-25</mat-option>
+        <mat-option value="SSN130">25-26</mat-option>
+        <mat-option value="SSN140">26-27</mat-option>
+        <mat-option value="SSN150">27-28</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="w-full">
       <mat-label>Game Type</mat-label>
       <mat-select formControlName="type">
         @for (type of gameTypes; track $index) {

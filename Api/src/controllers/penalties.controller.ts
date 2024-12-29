@@ -1,5 +1,8 @@
 import { Request, Response } from 'express';
-import { PenaltyPostModel } from '../models/post-models/penalty-post-model';
+import {
+    OpponentPenaltyPostModel,
+    PenaltyPostModel,
+} from '../models/post-models/penalty-post-model';
 import {
     genericExceptionHandler,
     getCurrentSeason,
@@ -66,6 +69,37 @@ const createPenalty = async (req: Request, res: Response) => {
     }
 };
 
+const createOpponentPenalty = async (req: Request, res: Response) => {
+    try {
+        const {
+            gameId,
+            playerFirstName,
+            playerSurname,
+            type,
+            duration,
+            time,
+        }: OpponentPenaltyPostModel = req.body;
+
+        // Validate PenaltyPostModel
+
+        // Add penalty to opponent penalties table
+        const penalty = await prisma.opponentPenalties.create({
+            data: {
+                playerFirstName,
+                playerSurname,
+                type,
+                duration,
+                gameId,
+                time,
+            },
+        });
+        res.status(201).json(penalty);
+    } catch (e) {
+        genericExceptionHandler(e, res);
+    }
+};
+
 export default {
     createPenalty,
+    createOpponentPenalty,
 };

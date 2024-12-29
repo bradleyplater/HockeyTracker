@@ -28,6 +28,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { GamesSubject } from '../../subjects/games.subject';
 import { PenaltyListComponent } from '../../components/penalty-list/penalty-list.component';
 import { AddPenaltyDialogComponent } from '../../components/add-penalty-dialog/add-penalty-dialog.component';
+import { GamePowerPlayComponent } from '../../components/game-power-play/game-power-play.component';
+import { GameTableComponent } from '../../components/game-table/game-table.component';
 
 @Component({
   selector: 'app-game-page',
@@ -43,6 +45,8 @@ import { AddPenaltyDialogComponent } from '../../components/add-penalty-dialog/a
     GoalsListComponent,
     GamePeriodScoresComponent,
     PenaltyListComponent,
+    GamePowerPlayComponent,
+    GameTableComponent,
   ],
   templateUrl: './game-page.component.html',
   styleUrl: './game-page.component.css',
@@ -53,7 +57,8 @@ export class GamePageComponent {
     private gamesService: GamesService,
     private teamService: TeamsService,
     private goalsSubject: GoalsSubject,
-    private gameSubject: GamesSubject
+    private gameSubject: GamesSubject,
+    private cdr: ChangeDetectorRef
   ) {}
 
   readonly addGoalDialog = inject(MatDialog);
@@ -79,42 +84,38 @@ export class GamePageComponent {
     }
 
     this.gamesService.getGameById(gameId).subscribe((game) => {
-      this.game = game;
-
       this.gameSubject.updateSelectedGame(game);
-
-      if (this.game) {
-        this.teamService
-          .getTeamById(this.game?.teamCreatedById)
-          .subscribe((team) => {
-            this.team = team;
-            if (this.team) {
-              //TODO: This should probably be moved to the same pattern as the penalties
-              this.mapGoalsToGoalPanel(this.game?.goals!);
-              this.mapOpponentGoalsToGoalPanel(this.game?.opponentGoals!);
-
-              this.totalGoals().sort((a, b) => a.time - b.time);
-
-              this.goalsSubject.updateTotalGoals(this.totalGoals());
-
-              this.isLoading = false;
-            }
-          });
-      } else {
-        this.isLoading = false;
-      }
+      this.game = game;
+      this.isLoading = false;
     });
   }
 
   openAddGoalsDialog() {
     const dialogRef = this.addGoalDialog.open(AddGoalDialogComponent, {
       data: {
-        players: this.team?.players?.filter((player) =>
-          this.game?.players.some((gamePlayer) => gamePlayer.id == player.id)
-        ),
-        gameId: this.game?.id,
+        players: this.game?.players,
+        game: this.game,
         team: this.team,
         goalsList: this.totalGoals,
+      },
+
+      width: '600px',
+      height: '550px',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('The dialog was closed');
+    });
+  }
+
+  openAddOpponentGoalsDialog() {
+    const dialogRef = this.addGoalDialog.open(AddGoalDialogComponent, {
+      data: {
+        players: this.game?.players,
+        game: this.game,
+        team: this.team,
+        goalsList: this.totalGoals,
+        isOpponentGoal: true,
       },
 
       width: '600px',
@@ -132,7 +133,6 @@ export class GamePageComponent {
         players: this.game?.players,
         game: this.game,
         team: this.team,
-        goalsList: this.totalGoals,
       },
 
       width: '600px',
@@ -144,49 +144,21 @@ export class GamePageComponent {
     });
   }
 
-  private mapGoalsToGoalPanel(goals: Goal[]) {
-    goals.forEach((goal) => {
-      const goalScorer = this.team?.players!.find(
-        (player) => player.id === goal.scoredByPlayerId
-      );
-      const assist1 = this.team?.players!.find(
-        (player) => player.id === goal.assist1
-      );
-      const assist2 = this.team?.players!.find(
-        (player) => player.id === goal.assist2
-      );
+  openAddOpponentPenaltyDialog() {
+    const dialogRef = this.addPenaltyDialog.open(AddPenaltyDialogComponent, {
+      data: {
+        players: this.game?.players,
+        game: this.game,
+        team: this.team,
+        isOpponentPenalty: true,
+      },
 
-      this.totalGoals?.update((value) => [
-        ...value,
-        {
-          scoredBy: goalScorer
-            ? `${goalScorer.firstName.toTitleCase()} ${goalScorer.surname.toTitleCase()}`
-            : '',
-          assist1: assist1
-            ? `${assist1.firstName.toTitleCase()} ${assist1.surname.toTitleCase()}`
-            : '',
-          assist2: assist2
-            ? `${assist2.firstName.toTitleCase()} ${assist2.surname.toTitleCase()}`
-            : '',
-          time: goal.time,
-          isOpponentGoal: false,
-        },
-      ]);
+      width: '600px',
+      height: '550px',
     });
-  }
 
-  private mapOpponentGoalsToGoalPanel(goals: OpponentGoal[]) {
-    goals.forEach((goal) => {
-      this.totalGoals?.update((value) => [
-        ...value,
-        {
-          scoredBy: `${goal.scoredByPlayerFirstName.toTitleCase()} ${goal.scoredByPlayerSurname.toTitleCase()}`,
-          assist1: '',
-          assist2: '',
-          time: goal.time,
-          isOpponentGoal: true,
-        },
-      ]);
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('The dialog was closed');
     });
   }
 }

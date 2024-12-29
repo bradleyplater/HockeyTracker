@@ -3,6 +3,7 @@ import { prisma } from '../server';
 import { generateRandom6DigitNumber } from '../Helpers/idHelpers';
 import { PostGameModel } from '../models/post-models/game-post-model';
 import { genericExceptionHandler } from '../Helpers/prismaHelpter';
+import { connect } from 'http2';
 
 const createGame = async (req: Request, res: Response) => {
     try {
@@ -13,13 +14,14 @@ const createGame = async (req: Request, res: Response) => {
             players,
             date,
             type,
+            seasonId,
         }: PostGameModel = req.body;
 
         let id = 'GME' + generateRandom6DigitNumber();
 
         // Validate input here
 
-        const newTeam = await prisma.games.create({
+        const newGame = await prisma.games.create({
             data: {
                 id,
                 teamCreatedById: teamCreatedById,
@@ -32,9 +34,37 @@ const createGame = async (req: Request, res: Response) => {
                 goalsScored: 0,
                 date: date,
                 type: type,
+                seasonId: seasonId,
             },
         });
-        res.status(200).json(newTeam);
+
+        await prisma.playerStats.updateMany({
+            where: {
+                playerId: {
+                    in: players.map((player) => player.id),
+                },
+                seasonId: seasonId,
+                teamId: null,
+            },
+            data: {
+                gamesPlayed: { increment: 1 },
+            },
+        });
+
+        await prisma.playerStats.updateMany({
+            where: {
+                playerId: {
+                    in: players.map((player) => player.id),
+                },
+                seasonId: seasonId,
+                teamId: teamCreatedById,
+            },
+            data: {
+                gamesPlayed: { increment: 1 },
+            },
+        });
+
+        res.status(200).json(newGame);
     } catch (e) {
         genericExceptionHandler(e, res);
     }
@@ -76,6 +106,8 @@ const getGameById = async (req: Request, res: Response) => {
                     opponentGoals: true,
                     players: true,
                     penalties: true,
+                    opponentPenalties: true,
+                    teamCreatedBy: true,
                 },
             });
             if (game) {
