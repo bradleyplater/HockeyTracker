@@ -4,6 +4,7 @@ export interface Player {
     firstName: string;
     surname: string;
     number?: number;
+    lastfivegames: LastFiveStats;
 }
 
 export interface PlayerStats {
@@ -16,4 +17,10 @@ export interface PlayerStats {
     gamesPlayed: number;
     pims: number;
     totalPoints: number;
+}
+
+export interface LastFiveStats {
+    goals: number;
+    assists: number;
+    pims: number;
 }

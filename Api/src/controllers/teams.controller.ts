@@ -53,6 +53,13 @@ const getTeamById = async (req: Request, res: Response) => {
                         },
                     },
                 },
+                games: {
+                    include: {
+                        goals: true,
+                        penalties: true,
+                        players: true,
+                    },
+                },
             },
         });
 
@@ -62,12 +69,60 @@ const getTeamById = async (req: Request, res: Response) => {
                 name: team.name,
                 hasLogo: team.hasLogo,
                 players: team.players.map((player) => {
+                    let filteredGames = team.games.filter((game) =>
+                        game.players.some(
+                            (gamePlayer) => gamePlayer.id === player.playerId
+                        )
+                    );
+
+                    if (filteredGames.length > 5) {
+                        filteredGames.sort(
+                            (gameA, gameB) =>
+                                new Date(gameA.date).getTime() -
+                                new Date(gameB.date).getTime()
+                        );
+
+                        filteredGames = filteredGames.slice(-5);
+                    }
+
+                    const allGoals = filteredGames.flatMap(
+                        (game) => game.goals
+                    );
+                    const allPenalties = filteredGames.flatMap(
+                        (game) => game.penalties
+                    );
+                    // then calculate last 5.
+
+                    const goalsScored = allGoals.filter(
+                        (goal) => goal.scoredByPlayerId == player.playerId
+                    );
+
+                    const assists = allGoals.filter(
+                        (goal) =>
+                            goal.assist1 == player.playerId ||
+                            goal.assist2 == player.playerId
+                    );
+
+                    const penalties = allPenalties.filter(
+                        (penalty) => penalty.playerId == player.playerId
+                    );
+
+                    const penaltyDuration = penalties.reduce(
+                        (sum, penalty) => sum + penalty.duration,
+                        0
+                    );
+
                     return {
                         id: player.playerId,
                         email: player.player.email,
                         firstName: player.player.firstName,
                         surname: player.player.surname,
                         number: player.playerNumber,
+                        lastfivegames: {
+                            goals: goalsScored.length,
+                            assists: assists.length,
+                            pims: penaltyDuration,
+                        },
                         stats: player.player.stats.map((stats) => {
                             return {
                                 id: stats.id,
