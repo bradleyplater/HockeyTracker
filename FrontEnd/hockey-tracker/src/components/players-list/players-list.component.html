@@ -26,14 +26,18 @@
           </span>
           }@empty {
           <span class="text-xs text-gray-500"> No teams </span>
-          }}
-
+          }} @if(team){
           <mat-divider></mat-divider>
           <mat-card-footer class="flex gap-2 justify-center items-center">
             <span class="text-xs text-gray-500"> Last 5 games </span>
 
-            <span class="text-xs">2G 3A 14P</span>
+            <span class="text-xs"
+              >{{ player.lastFiveGames?.goals }}G
+              {{ player.lastFiveGames?.assists }}A
+              {{ player.lastFiveGames?.pims }}Pims</span
+            >
           </mat-card-footer>
+          }
         </mat-card>
       </a>
     </li>

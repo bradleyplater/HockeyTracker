@@ -9,6 +9,13 @@ export interface Player {
   number?: number;
   teams?: PlayerTeam[];
   stats?: PlayerStats[];
+  lastFiveGames?: LastFiveStats;
+}
+
+export interface LastFiveStats {
+  goals: number;
+  assists: number;
+  pims: number;
 }
 
 export interface PlayerStats {

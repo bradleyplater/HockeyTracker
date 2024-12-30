@@ -4,7 +4,7 @@ export interface Player {
     firstName: string;
     surname: string;
     number?: number;
-    lastfivegames: LastFiveStats;
+    lastFiveGames: LastFiveStats;
 }
 
 export interface PlayerStats {

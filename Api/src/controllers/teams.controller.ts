@@ -118,7 +118,7 @@ const getTeamById = async (req: Request, res: Response) => {
                         firstName: player.player.firstName,
                         surname: player.player.surname,
                         number: player.playerNumber,
-                        lastfivegames: {
+                        lastFiveGames: {
                             goals: goalsScored.length,
                             assists: assists.length,
                             pims: penaltyDuration,

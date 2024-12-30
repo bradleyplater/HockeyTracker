@@ -65,7 +65,12 @@ export class PlayersListComponent {
     if (this.isForTeam) {
       this.subscription = this.teamSubject.team$.subscribe((team) => {
         if (team && team.players) {
+          team.players.sort(
+            (playerA, playerB) => playerA.number! - playerB.number!
+          );
+
           this.team = team;
+
           this.playersList.set(team.players);
           this.cdr.detectChanges();
         }
