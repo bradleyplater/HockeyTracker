@@ -1,5 +1,5 @@
 <div>
-  <ul class="flex">
+  <ul class="flex flex-wrap">
     @for (game of gamesList(); track $index) {
     <li class="p-2 w-48">
       <a routerLinkActive="active" [routerLink]="['/games', game.id]">

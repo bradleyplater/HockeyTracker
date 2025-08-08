@@ -1,5 +1,6 @@
 export enum Penalties {
   ABUSE = 'Abuse',
+  AGGR = 'Aggressor',
   BOARD = 'Board',
   CHARG = 'Charging',
   CROSS = 'Cross Check',
@@ -8,7 +9,9 @@ export enum Penalties {
   CHEB = 'Checking From Behind',
   DELAY = 'Delay of Game',
   ELBOW = 'Elbow',
+  EMBEL = 'Embelishment',
   FIGHT = 'Fight',
+  GOALINTRF = 'Goal Tender Interference',
   HOST = 'Holding the Stick',
   HOLD = 'Holding',
   HOOK = 'Hooking',
@@ -17,6 +20,7 @@ export enum Penalties {
   KNEE = 'Knee',
   MATCH = 'Match',
   ROUGH = 'Roughing',
+  RETAL = 'Retaliation',
   SLASH = 'Slashing',
   SPEAR = 'Spearing',
   TOOM = 'Too Many Men',
@@ -28,4 +32,4 @@ export enum Penalties {
   ILLEQUIP = 'Illegal Equipment',
 }
 
-export const penaltyDurations = [2, 4, 5, 10, 20, 25];
+export const penaltyDurations = [2, 4, 5, 10, 12, 20, 25];

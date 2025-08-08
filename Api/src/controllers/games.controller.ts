@@ -2,8 +2,15 @@ import { Request, Response } from 'express';
 import { prisma } from '../server';
 import { generateRandom6DigitNumber } from '../Helpers/idHelpers';
 import { PostGameModel } from '../models/post-models/game-post-model';
-import { genericExceptionHandler } from '../Helpers/prismaHelpter';
+import { genericExceptionHandler } from '../Helpers/prismaHelper';
+import { getGameById as getGame } from '../Helpers/prismaHelper';
 import { connect } from 'http2';
+
+interface PlayerStatsEntry {
+    playerId: string;
+    seasonId: string;
+    teamId: string | null;
+}
 
 const createGame = async (req: Request, res: Response) => {
     try {
@@ -38,6 +45,78 @@ const createGame = async (req: Request, res: Response) => {
             },
         });
 
+        // Fetch existing player stats for null team and specific team
+        const existingStats = await prisma.playerStats.findMany({
+            where: {
+                OR: [{ teamId: null }, { teamId: teamCreatedById }],
+                playerId: {
+                    in: players.map((player) => player.id),
+                },
+                seasonId: seasonId,
+            },
+        });
+
+        const existingStatsMap = new Map(
+            existingStats.map((stat) => [
+                `${stat.playerId}-${stat.teamId}`,
+                stat,
+            ])
+        );
+
+        // Identify players needing new stats entries
+        const newStatsEntries: PlayerStatsEntry[] = [];
+
+        players.forEach((player) => {
+            const playerId = player.id;
+            const playerTeamKey = `${playerId}-${teamCreatedById}`;
+            const playerNullTeamKey = `${playerId}-null`;
+
+            if (!existingStatsMap.has(playerTeamKey)) {
+                newStatsEntries.push({
+                    playerId,
+                    seasonId,
+                    teamId: teamCreatedById,
+                });
+            }
+
+            if (!existingStatsMap.has(playerNullTeamKey)) {
+                newStatsEntries.push({
+                    playerId,
+                    seasonId,
+                    teamId: null,
+                });
+            }
+        });
+
+        // remove duplication
+        const existingKeys = new Set(
+            existingStats.map(
+                (stat) => `${stat.playerId}-${stat.seasonId}-${stat.teamId}`
+            )
+        );
+
+        const uniqueNewStats = newStatsEntries.filter(
+            (entry) =>
+                !existingKeys.has(
+                    `${entry.playerId}-${entry.seasonId}-${entry.teamId}`
+                )
+        );
+
+        // Create new stats entries if necessary
+        if (uniqueNewStats.length > 0) {
+            await prisma.playerStats.createMany({
+                data: uniqueNewStats.map((entry) => ({
+                    ...entry,
+                    numberOfGoals: 0,
+                    numberOfAssists: 0,
+                    gamesPlayed: 0,
+                    pims: 0,
+                    totalPoints: 0,
+                })),
+            });
+        }
+
+        // Update stats for null team
         await prisma.playerStats.updateMany({
             where: {
                 playerId: {
@@ -51,6 +130,7 @@ const createGame = async (req: Request, res: Response) => {
             },
         });
 
+        // Update stats for specific team
         await prisma.playerStats.updateMany({
             where: {
                 playerId: {
@@ -97,19 +177,7 @@ const getGameById = async (req: Request, res: Response) => {
     const gameId = req.params.gameId;
     try {
         if (gameId != null || gameId != undefined) {
-            const game = await prisma.games.findUnique({
-                where: {
-                    id: gameId,
-                },
-                include: {
-                    goals: true,
-                    opponentGoals: true,
-                    players: true,
-                    penalties: true,
-                    opponentPenalties: true,
-                    teamCreatedBy: true,
-                },
-            });
+            const game = await getGame(gameId);
             if (game) {
                 res.status(200).json(game);
             } else {

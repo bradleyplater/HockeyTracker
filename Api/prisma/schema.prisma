@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["createMany"]
 }
 
 datasource db {
@@ -81,6 +82,7 @@ model Games {
   type                                              String          @default("challenge")
   season                                            Season          @relation(fields: [seasonId], references: [id])
   seasonId                                          String          @default("SSN120")
+  gameNotes                                         String?
 }
 
 model Goals {

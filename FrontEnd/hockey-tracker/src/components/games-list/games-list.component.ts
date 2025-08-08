@@ -67,6 +67,14 @@ export class GamesListComponent {
     });
 
     this.gamesSubject.games$.subscribe((games) => {
+      games?.sort(
+        (gameA, gameB) => gameA.date.getTime() - gameB.date.getTime()
+      );
+
+      this.team?.players?.sort(
+        (playera, playerb) => playera.number! - playerb.number!
+      );
+
       this.gamesList.set(games as Game[]);
       this.cdr.detectChanges();
     });

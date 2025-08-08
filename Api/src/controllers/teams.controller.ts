@@ -3,7 +3,7 @@ import { prisma } from '../server';
 import { generateRandom6DigitNumber } from '../Helpers/idHelpers';
 import { Team } from '../models/team';
 import { Player } from '../models/player';
-import * as PrismaHelper from '../Helpers/prismaHelpter';
+import * as PrismaHelper from '../Helpers/prismaHelper';
 
 const createTeam = async (req: Request, res: Response) => {
     try {
@@ -169,21 +169,6 @@ const addPlayerToTeam = async (req: Request, res: Response) => {
                 },
             },
         });
-
-        const currentSeason = await PrismaHelper.getCurrentSeason(res);
-
-        if (currentSeason) {
-            await prisma.playerStats.create({
-                data: {
-                    id: crypto.randomUUID(),
-                    playerId: playerId,
-                    teamId: teamId,
-                    seasonId: currentSeason.id,
-                },
-            });
-        } else {
-            res.status(500).json({ error: 'Current season is null' });
-        }
 
         PrismaHelper.getPlayerById(playerId, res);
     } catch (e) {}

@@ -6,7 +6,8 @@ import {
 import {
     genericExceptionHandler,
     getCurrentSeason,
-} from '../Helpers/prismaHelpter';
+    getGameById,
+} from '../Helpers/prismaHelper';
 import { prisma } from '../server';
 
 const createPenalty = async (req: Request, res: Response) => {
@@ -33,7 +34,8 @@ const createPenalty = async (req: Request, res: Response) => {
             },
         });
 
-        const currentSeason = await getCurrentSeason(res);
+        const game = await getGameById(gameId);
+        const currentSeasonId = game?.seasonId;
 
         // Increments penalties individual stats for season
         await prisma.playerStats.updateMany({
@@ -41,7 +43,7 @@ const createPenalty = async (req: Request, res: Response) => {
                 playerId: {
                     in: [playerId].map((player) => player),
                 },
-                seasonId: currentSeason?.id,
+                seasonId: currentSeasonId,
                 teamId: null,
             },
             data: {
@@ -55,7 +57,7 @@ const createPenalty = async (req: Request, res: Response) => {
                 playerId: {
                     in: [playerId].map((player) => player),
                 },
-                seasonId: currentSeason?.id,
+                seasonId: currentSeasonId,
                 teamId: teamId,
             },
             data: {

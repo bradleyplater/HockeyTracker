@@ -3,11 +3,12 @@ import {
   Component,
   ElementRef,
   ViewChild,
+  ɵsetCurrentInjector,
 } from '@angular/core';
 import { TeamSubject } from '../../subjects/teams.subject';
 import { Team } from '../../models/team';
 import { MatSelectModule } from '@angular/material/select';
-import { PlayerStats, PlayerStatsTable } from '../../models/player';
+import { Player, PlayerStats, PlayerStatsTable } from '../../models/player';
 import { filter } from 'rxjs';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -94,6 +95,33 @@ export class TeamStatsComponent {
         }
       });
     });
+
+    if (season == 'all') {
+      const combinedStats = filteredStats.reduce(
+        (statsArray: PlayerStats[], currentStats: PlayerStats) => {
+          const existingStat = statsArray.find(
+            (item) => item.playerId === currentStats.playerId
+          );
+
+          if (existingStat) {
+            // If an item with the same ID already exists, add the values
+            existingStat.goals += currentStats.goals;
+            existingStat.assists += currentStats.assists;
+            existingStat.gamesPlayed += currentStats.gamesPlayed;
+            existingStat.pims += currentStats.pims;
+            existingStat.points += currentStats.points;
+          } else {
+            // Otherwise, add the current item to the accumulator
+            statsArray.push(currentStats);
+          }
+
+          return statsArray;
+        },
+        []
+      );
+
+      filteredStats = combinedStats;
+    }
 
     this.teamSubject.updateFilteredPlayerStats(filteredStats);
   }

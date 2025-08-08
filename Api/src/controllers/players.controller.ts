@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
 import { prisma } from '../server';
 import { generateRandom6DigitNumber } from '../Helpers/idHelpers';
-import * as PrismaHelper from '../Helpers/prismaHelpter';
-import { PlayerStats as PrimsaPlayerStats } from '@prisma/client';
+import * as PrismaHelper from '../Helpers/prismaHelper';
 
 const createPlayer = async (req: Request, res: Response) => {
     try {
@@ -14,26 +13,7 @@ const createPlayer = async (req: Request, res: Response) => {
 
         let id = 'PLR' + generateRandom6DigitNumber();
 
-        const seasons = await prisma.season.findMany();
-
-        const playerStats: PrimsaPlayerStats[] = [];
-
-        seasons.forEach((season) => {
-            const currentDate = new Date();
-            if (currentDate > season.startDate) {
-                playerStats.push({
-                    playerId: id,
-                    seasonId: season.id,
-                    teamId: null,
-                    gamesPlayed: 0,
-                    numberOfAssists: 0,
-                    numberOfGoals: 0,
-                    pims: 0,
-                    totalPoints: 0,
-                    id: crypto.randomUUID(),
-                });
-            }
-        });
+        // Don't think this is needed can use games to create new player stats objects rather than having them default. should save database space and confusion
 
         const newPlayer = await prisma.players.create({
             data: {
@@ -41,21 +21,6 @@ const createPlayer = async (req: Request, res: Response) => {
                 firstName: firstName.toLowerCase(),
                 surname: surname.toLowerCase(),
                 email: email.toLowerCase(),
-                stats: {
-                    createMany: {
-                        data: playerStats.map((stats) => {
-                            return {
-                                seasonId: stats.seasonId,
-                                gamesPlayed: 0,
-                                numberOfAssists: 0,
-                                numberOfGoals: 0,
-                                pims: 0,
-                                totalPoints: 0,
-                                id: crypto.randomUUID(),
-                            };
-                        }),
-                    },
-                },
             },
         });
         res.status(200).json(newPlayer);

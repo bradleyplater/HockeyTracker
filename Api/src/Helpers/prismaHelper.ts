@@ -84,6 +84,22 @@ export async function getCurrentSeason(res: Response) {
     }
 }
 
+export async function getGameById(gameId: string) {
+    return await prisma.games.findUnique({
+        where: {
+            id: gameId,
+        },
+        include: {
+            goals: true,
+            opponentGoals: true,
+            players: true,
+            penalties: true,
+            opponentPenalties: true,
+            teamCreatedBy: true,
+        },
+    });
+}
+
 export async function genericExceptionHandler(
     exception: unknown,
     res: Response

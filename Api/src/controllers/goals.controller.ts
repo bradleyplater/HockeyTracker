@@ -3,7 +3,8 @@ import { GoalPostModel } from '../models/post-models/goal-post-model';
 import {
     genericExceptionHandler,
     getCurrentSeason,
-} from '../Helpers/prismaHelpter';
+    getGameById,
+} from '../Helpers/prismaHelper';
 import { prisma } from '../server';
 
 const createGoal = async (req: Request, res: Response) => {
@@ -33,7 +34,8 @@ const createGoal = async (req: Request, res: Response) => {
             },
         });
 
-        const currentSeason = await getCurrentSeason(res);
+        const game = await getGameById(gameId);
+        const currentSeasonId = game?.seasonId;
 
         // Increments goal scorers individual stats for season
         await prisma.playerStats.updateMany({
@@ -41,7 +43,7 @@ const createGoal = async (req: Request, res: Response) => {
                 playerId: {
                     in: [scoredByPlayerId].map((player) => player),
                 },
-                seasonId: currentSeason?.id,
+                seasonId: currentSeasonId,
                 teamId: null,
             },
             data: {
@@ -56,7 +58,7 @@ const createGoal = async (req: Request, res: Response) => {
                 playerId: {
                     in: [scoredByPlayerId].map((player) => player),
                 },
-                seasonId: currentSeason?.id,
+                seasonId: currentSeasonId,
                 teamId: teamId,
             },
             data: {
@@ -74,7 +76,7 @@ const createGoal = async (req: Request, res: Response) => {
                         ensureAssistIsEmptyStringWhenNull(assist2),
                     ],
                 },
-                seasonId: currentSeason?.id,
+                seasonId: currentSeasonId,
                 teamId: null,
             },
             data: {
@@ -92,7 +94,7 @@ const createGoal = async (req: Request, res: Response) => {
                         ensureAssistIsEmptyStringWhenNull(assist2),
                     ],
                 },
-                seasonId: currentSeason?.id,
+                seasonId: currentSeasonId,
                 teamId: teamId,
             },
             data: {
